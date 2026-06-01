@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Think Like A Designer – أحمد شعلان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ===================== TOKENS ===================== */
+:root {
+  --bg: #080c14;
+  --bg2: #0d1220;
+  --panel: rgba(255,255,255,.042);
+  --panel-h: rgba(255,255,255,.07);
+  --stroke: rgba(255,255,255,.08);
+  --stroke-h: rgba(6,207,156,.32);
+  --accent: #06cf9c;
+  --accent2: #00a8ff;
+  --accent3: #ff5f7e;
+  --accent4: #f5a623;
+  --text: rgba(255,255,255,.93);
+  --muted: rgba(255,255,255,.52);
+  --muted2: rgba(255,255,255,.32);
+  --r: 16px;
+  --r2: 24px;
+  --font: "IBM Plex Sans Arabic", system-ui, Arial, sans-serif;
+  --mono: "Space Mono", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NOISE */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 1000; opacity: .4;
+}
+
+/* ===================== NAV ===================== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  background: rgba(8,12,20,.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--stroke);
+  padding: 0 clamp(20px,4vw,60px);
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 15px; font-weight: 800;
+  color: var(--text);
+  text-decoration: none;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg,var(--accent),var(--accent2));
+  display: grid; place-items: center; font-size: 16px;
+}
+.nav-logo span { color: var(--accent); }
+.nav-pills {
+  display: flex; gap: 4px;
+  list-style: none;
+}
+.nav-pills a {
+  text-decoration: none; color: var(--muted);
+  font-size: 12px; font-weight: 600;
+  padding: 5px 12px; border-radius: 999px;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.nav-pills a:hover { color: var(--text); background: var(--panel-h); }
+.slide-counter {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--muted2);
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  padding: 4px 12px; border-radius: 999px;
+}
+
+/* ===================== SLIDE SYSTEM ===================== */
+.slides-wrap {
+  padding-top: 60px;
+}
+.slide {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(40px,6vw,80px) clamp(20px,5vw,80px);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--stroke);
+}
+.slide-num {
+  position: absolute; top: 80px; left: 40px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--muted2);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  letter-spacing: 2px;
+}
+.slide-inner {
+  max-width: 1200px; width: 100%;
+  margin: 0 auto;
+  position: relative; z-index: 2;
+}
+
+/* Glows */
+.glow-teal {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(ellipse,rgba(6,207,156,.18) 0%,transparent 65%);
+  pointer-events: none;
+}
+.glow-blue {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(ellipse,rgba(0,168,255,.12) 0%,transparent 65%);
+  pointer-events: none;
+}
+.glow-pink {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(ellipse,rgba(255,95,126,.1) 0%,transparent 65%);
+  pointer-events: none;
+}
+
+/* ===================== SLIDE 1 – HERO ===================== */
+#slide-1 {
+  text-align: center;
+}
+#slide-1 .glow-teal { width: 900px; height: 600px; top: -200px; left: 50%; transform: translateX(-50%); }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(6,207,156,.1); border: 1px solid rgba(6,207,156,.25);
+  border-radius: 999px; padding: 7px 18px;
+  font-size: 12px; font-weight: 700; color: var(--accent);
+  margin-bottom: 28px;
+  animation: fadeUp .6s ease both;
+}
+.hero-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
+.hero-h1 {
+  font-size: clamp(42px,7vw,96px);
+  font-weight: 800; line-height: 1.1;
+  margin-bottom: 14px;
+  animation: fadeUp .7s .1s ease both;
+}
+.hero-h1 .hl { color: var(--accent); }
+.hero-sub {
+  font-size: clamp(18px,2.5vw,28px);
+  color: var(--muted); font-weight: 300;
+  margin-bottom: 48px;
+  animation: fadeUp .7s .2s ease both;
+}
+.hero-author {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: 999px; padding: 10px 20px 10px 14px;
+  animation: fadeUp .7s .3s ease both;
+}
+.author-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg,var(--accent),var(--accent2));
+  display: grid; place-items: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.author-name { font-size: 15px; font-weight: 700; }
+.author-title { font-size: 11px; color: var(--muted2); }
+.hero-scroll {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--muted2); font-size: 11px;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* ===================== SLIDE 2 – QUESTION ===================== */
+.big-question {
+  font-size: clamp(28px,4vw,52px);
+  font-weight: 800; line-height: 1.4;
+  text-align: center;
+  margin-bottom: 48px;
+}
+.big-question .hl { color: var(--accent); }
+.answers-grid {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 12px;
+}
+.answer-chip {
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: var(--r); padding: 20px;
+  display: flex; align-items: center; gap: 14px;
+  transition: all .2s;
+}
+.answer-chip:hover { border-color: var(--stroke-h); background: var(--panel-h); transform: translateY(-2px); }
+.chip-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: grid; place-items: center; font-size: 22px;
+  flex-shrink: 0;
+}
+.chip-icon.g1 { background: rgba(6,207,156,.12); }
+.chip-icon.g2 { background: rgba(0,168,255,.12); }
+.chip-icon.g3 { background: rgba(255,95,126,.12); }
+.chip-icon.g4 { background: rgba(245,166,35,.12); }
+.chip-text { font-size: 14px; font-weight: 600; }
+.chip-sub { font-size: 11px; color: var(--muted2); margin-top: 2px; }
+
+/* ===================== SECTION LABEL ===================== */
+.sec-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 16px;
+}
+.sec-label::before {
+  content: ''; display: block; width: 20px; height: 2px;
+  background: var(--accent); border-radius: 1px;
+}
+
+/* ===================== COMPARISON ===================== */
+.compare-wrap {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+}
+.compare-card {
+  border-radius: var(--r2);
+  padding: 32px;
+  border: 1px solid var(--stroke);
+}
+.compare-card.beginner { background: rgba(255,95,126,.05); border-color: rgba(255,95,126,.2); }
+.compare-card.pro { background: rgba(6,207,156,.05); border-color: rgba(6,207,156,.2); }
+.compare-title {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 18px; font-weight: 800; margin-bottom: 24px;
+}
+.compare-title .badge {
+  padding: 4px 12px; border-radius: 999px; font-size: 10px; font-weight: 800;
+}
+.beginner .badge { background: rgba(255,95,126,.2); color: #ffb3c1; border: 1px solid rgba(255,95,126,.3); }
+.pro .badge { background: rgba(6,207,156,.2); color: #a8fce5; border: 1px solid rgba(6,207,156,.3); }
+.compare-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.compare-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: var(--muted); line-height: 1.5;
+}
+.compare-list li::before { content: ''; flex-shrink: 0; }
+.beginner .compare-list li .dot { color: var(--accent3); }
+.pro .compare-list li .dot { color: var(--accent); }
+.dot { font-size: 16px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+
+/* ===================== PRINCIPLE CARD ===================== */
+.principles-grid {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+  gap: 16px;
+}
+.principle-card {
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: var(--r2); padding: 28px;
+  transition: all .2s; position: relative; overflow: hidden;
+}
+.principle-card::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  opacity: .06;
+  transform: translate(30%,-30%);
+}
+.principle-card.c1::before { background: var(--accent); }
+.principle-card.c2::before { background: var(--accent2); }
+.principle-card.c3::before { background: var(--accent3); }
+.principle-card.c4::before { background: var(--accent4); }
+.principle-card:hover { transform: translateY(-4px); border-color: var(--stroke-h); }
+.p-icon {
+  font-size: 32px; margin-bottom: 16px;
+  width: 58px; height: 58px;
+  background: var(--panel-h); border: 1px solid var(--stroke);
+  border-radius: 14px; display: grid; place-items: center;
+}
+.p-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+.p-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* ===================== QUOTE SLIDE ===================== */
+.quote-wrap {
+  text-align: center; max-width: 800px; margin: 0 auto;
+}
+.quote-mark { font-size: 100px; line-height: 1; color: var(--accent); opacity: .3; font-family: Georgia, serif; }
+.quote-text {
+  font-size: clamp(22px,3.5vw,42px); font-weight: 700;
+  line-height: 1.5; margin-bottom: 24px;
+}
+.quote-text .hl { color: var(--accent); }
+.quote-source {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: 999px; padding: 8px 18px;
+  font-size: 13px; color: var(--muted);
+}
+
+/* ===================== HIERARCHY DEMO ===================== */
+.hier-demo {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start;
+}
+.demo-box {
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: var(--r2); padding: 28px;
+}
+.demo-box h4 { font-size: 13px; font-weight: 700; margin-bottom: 20px; }
+.demo-box h4 .bad { color: var(--accent3); }
+.demo-box h4 .good { color: var(--accent); }
+/* BAD */
+.bad-layout { display: flex; flex-direction: column; gap: 6px; }
+.bad-row {
+  background: rgba(255,255,255,.06); border-radius: 6px;
+  padding: 10px; font-size: 12px; color: var(--muted2);
+  font-weight: 600;
+}
+/* GOOD */
+.good-ad {
+  background: linear-gradient(135deg,rgba(6,207,156,.08),rgba(0,168,255,.06));
+  border: 1px solid rgba(6,207,156,.15); border-radius: 14px;
+  padding: 24px; text-align: center;
+}
+.ad-discount {
+  font-size: 56px; font-weight: 800; color: var(--accent);
+  line-height: 1; margin-bottom: 6px;
+}
+.ad-label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.ad-sub { font-size: 11px; color: var(--muted2); margin-bottom: 16px; }
+.ad-cta {
+  display: inline-block; background: var(--accent); color: #080c14;
+  font-size: 12px; font-weight: 800; border-radius: 999px;
+  padding: 8px 20px;
+}
+
+/* ===================== TOOLS GRID ===================== */
+.tools-grid {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+  gap: 12px;
+}
+.tool-card {
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: var(--r); padding: 20px 16px; text-align: center;
+  transition: all .2s;
+}
+.tool-card:hover { border-color: var(--stroke-h); transform: translateY(-3px); }
+.tool-emoji { font-size: 30px; margin-bottom: 10px; }
+.tool-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.tool-desc { font-size: 11px; color: var(--muted2); }
+
+/* ===================== MISTAKE CARDS ===================== */
+.mistakes-grid {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 16px;
+}
+.mistake-card {
+  background: var(--panel); border: 1px solid rgba(255,95,126,.15);
+  border-radius: var(--r2); padding: 28px;
+  transition: all .2s; position: relative;
+}
+.mistake-card:hover { transform: translateY(-3px); border-color: rgba(255,95,126,.3); }
+.mistake-num {
+  position: absolute; top: 20px; left: 20px;
+  font-family: var(--mono); font-size: 11px; color: var(--muted2);
+}
+.mistake-icon { font-size: 32px; margin-bottom: 14px; }
+.mistake-title { font-size: 16px; font-weight: 800; color: var(--accent3); margin-bottom: 10px; }
+.mistake-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* ===================== PROCESS ===================== */
+.process-wrap {
+  display: flex; flex-direction: column; gap: 0;
+}
+.process-step {
+  display: flex; gap: 20px; align-items: flex-start;
+  position: relative; padding-bottom: 0;
+}
+.process-step + .process-step { margin-top: 0; }
+.step-line-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  flex-shrink: 0;
+}
+.step-circle {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  flex-shrink: 0; z-index: 2;
+  border: 2px solid var(--accent); color: var(--accent);
+  background: var(--bg);
+}
+.step-connector {
+  width: 2px; flex: 1; min-height: 32px;
+  background: linear-gradient(to bottom,var(--accent),transparent);
+  margin: 4px 0;
+}
+.step-content { padding: 10px 0 24px; }
+.step-title { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+.step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ===================== CHALLENGE ===================== */
+.challenge-box {
+  background: rgba(6,207,156,.04);
+  border: 1px solid rgba(6,207,156,.2);
+  border-radius: var(--r2); padding: 40px;
+  text-align: center; max-width: 720px; margin: 0 auto;
+}
+.challenge-icon { font-size: 56px; margin-bottom: 16px; }
+.challenge-title { font-size: clamp(20px,3vw,32px); font-weight: 800; margin-bottom: 16px; }
+.challenge-rule {
+  background: rgba(255,95,126,.08); border: 1px solid rgba(255,95,126,.2);
+  border-radius: 12px; padding: 16px 24px; margin: 20px 0;
+  font-size: 14px; font-weight: 600; color: var(--accent3);
+}
+.challenge-ideas {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+  margin-top: 20px;
+}
+.idea-chip {
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: 999px; padding: 6px 16px;
+  font-size: 12px; color: var(--muted);
+}
+
+/* ===================== HOMEWORK ===================== */
+.hw-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+}
+.hw-card {
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: var(--r2); padding: 28px;
+}
+.hw-card h4 { font-size: 15px; font-weight: 800; margin-bottom: 16px; }
+.hw-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.hw-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: var(--muted); line-height: 1.5;
+}
+.hw-list li .check { color: var(--accent); flex-shrink: 0; }
+
+/* ===================== FINAL ===================== */
+.final-wrap { text-align: center; max-width: 760px; margin: 0 auto; }
+.final-title {
+  font-size: clamp(36px,6vw,80px); font-weight: 800; line-height: 1.2;
+  margin-bottom: 24px;
+}
+.final-title .hl { color: var(--accent); }
+.final-pills {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  margin-bottom: 36px;
+}
+.final-pill {
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: 999px; padding: 8px 18px;
+  font-size: 13px; font-weight: 600; color: var(--muted);
+}
+.final-pill .accent { color: var(--accent); }
+.final-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg,var(--accent),var(--accent2));
+  color: #080c14; font-size: 15px; font-weight: 800;
+  padding: 14px 32px; border-radius: 999px;
+  text-decoration: none;
+  transition: all .2s;
+}
+.final-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(6,207,156,.3); }
+
+/* ===================== DIVIDER ===================== */
+.divider { width: 100%; height: 1px; background: var(--stroke); margin: 32px 0; }
+
+/* ===================== SLIDE TITLES ===================== */
+.slide-title {
+  font-size: clamp(26px,4vw,52px); font-weight: 800; line-height: 1.2;
+  margin-bottom: 12px;
+}
+.slide-title .hl { color: var(--accent); }
+.slide-desc { font-size: clamp(14px,1.5vw,17px); color: var(--muted); line-height: 1.7; margin-bottom: 36px; }
+
+/* ===================== VISUAL ELEMENTS ===================== */
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.tag {
+  padding: 4px 12px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  background: var(--panel); border: 1px solid var(--stroke); color: var(--muted);
+}
+.tag.accent { background: rgba(6,207,156,.1); border-color: rgba(6,207,156,.25); color: var(--accent); }
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:768px){
+  .compare-wrap, .hier-demo, .hw-grid { grid-template-columns: 1fr; }
+  .nav-pills { display: none; }
+  .slide-num { display: none; }
+}
+
+/* ===================== VISUAL ICONS SECTION ===================== */
+.icon-row {
+  display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px;
+}
+.icon-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: 999px; padding: 8px 16px;
+  font-size: 13px; font-weight: 600;
+}
+.icon-badge .emoji { font-size: 18px; }
+
+/* ===================== FULL-WIDTH TEXT ===================== */
+.huge-text {
+  font-size: clamp(52px,10vw,140px);
+  font-weight: 800; color: rgba(255,255,255,.04);
+  position: absolute; bottom: -20px; right: 0; left: 0;
+  text-align: center; pointer-events: none; white-space: nowrap;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* ===================== SPACING ===================== */
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mt-32 { margin-top: 32px; }
+.mb-32 { margin-bottom: 32px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* 2-col layout for some slides */
+.layout-2col {
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: center;
+}
+@media(max-width:900px) { .layout-2col { grid-template-columns: 1fr; } }
+
+/* Progress bar */
+.progress-bar {
+  position: fixed; top: 60px; left: 0; right: 0; height: 2px;
+  background: var(--stroke); z-index: 850;
+}
+.progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(to right,var(--accent),var(--accent2));
+  transition: width .3s ease;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">🎨</div>
+    <div>أحمد <span>شعلان</span></div>
+  </a>
+  <ul class="nav-pills">
+    <li><a href="#slide-1">البداية</a></li>
+    <li><a href="#slide-3">المقارنة</a></li>
+    <li><a href="#slide-4b">السؤال</a></li>
+    <li><a href="#slide-4f">الحقيقة</a></li>
+    <li><a href="#slide-5">المبادئ</a></li>
+    <li><a href="#slide-7">الأخطاء</a></li>
+    <li><a href="#slide-9">التحدي</a></li>
+    <li><a href="#slide-11">الواجب</a></li>
+  </ul>
+  <div class="slide-counter" id="slideCounter">01 / 12</div>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="slides-wrap">
+
+<!-- ===== SLIDE 1 — HERO ===== -->
+<section class="slide" id="slide-1">
+  <div class="glow-teal" style="width:900px;height:500px;top:-200px;left:50%;transform:translateX(-50%)"></div>
+  <div class="slide-num">01</div>
+  <div class="slide-inner" style="text-align:center">
+    <div class="hero-badge">المحاضرة الأولى ✦ كورس التصميم الاحترافي</div>
+    <h1 class="hero-h1">Think Like A<br><span class="hl">Designer</span></h1>
+    <p class="hero-sub">فكر كمصمم… مش كمستخدم برامج</p>
+    <div class="hero-author">
+      <div class="author-avatar">🎨</div>
+      <div>
+        <div class="author-name">أحمد شعلان</div>
+        <div class="author-title">Art Director · بإشراف أحمد شعلان</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>اسكرول للأسفل</span>
+    <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><path d="M8 2v16M2 14l6 6 6-6" stroke="rgba(255,255,255,.3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</section>
+
+<!-- ===== SLIDE 2 — THE REAL QUESTION ===== -->
+<section class="slide" id="slide-2">
+  <div class="glow-blue" style="width:600px;height:400px;top:-100px;right:-100px"></div>
+  <div class="slide-num">02</div>
+  <div class="slide-inner">
+    <div class="sec-label">السؤال المهم</div>
+    <h2 class="slide-title">ليه لحد دلوقتي <span class="hl">تصاميمك شكلها مبتدئ؟</span></h2>
+    <p class="slide-desc">السبب الحقيقي مش في الأدوات... السبب في طريقة تفكيرك</p>
+
+    <div class="answers-grid">
+      <div class="answer-chip">
+        <div class="chip-icon g1">🛠️</div>
+        <div><div class="chip-text">مش الأدوات</div><div class="chip-sub">Photoshop · Figma · Canva</div></div>
+      </div>
+      <div class="answer-chip">
+        <div class="chip-icon g2">⚡</div>
+        <div><div class="chip-text">مش الـ Effects</div><div class="chip-sub">Shadows · Gradients · Blends</div></div>
+      </div>
+      <div class="answer-chip">
+        <div class="chip-icon g3">⌨️</div>
+        <div><div class="chip-text">مش الـ Shortcuts</div><div class="chip-sub">حفظ الأوامر السريعة</div></div>
+      </div>
+      <div class="answer-chip">
+        <div class="chip-icon g4">🧠</div>
+        <div><div class="chip-text">المشكلة في التفكير</div><div class="chip-sub">طريقتك في التعامل مع التصميم</div></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="text-align:center">
+      <div style="font-size:clamp(18px,2.5vw,28px);font-weight:800;line-height:1.5">
+        الفرق الحقيقي بين المصمم المبتدئ والمحترف<br>
+        <span style="color:var(--accent)">مش بيبدأ من إيده… بيبدأ من عقله</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 3 — COMPARISON ===== -->
+<section class="slide" id="slide-3">
+  <div class="glow-pink" style="width:500px;height:400px;bottom:-100px;left:-50px"></div>
+  <div class="slide-num">03</div>
+  <div class="slide-inner">
+    <div class="sec-label">المقارنة الحقيقية</div>
+    <h2 class="slide-title">المبتدئ <span class="hl">vs</span> المحترف</h2>
+    <p class="slide-desc">مش في الأدوات… في الأسئلة اللي كل واحد بيسألها</p>
+
+    <div class="compare-wrap">
+      <div class="compare-card beginner">
+        <div class="compare-title">
+          🎒 المبتدئ
+          <span class="badge">يسأل: إزاي؟</span>
+        </div>
+        <ul class="compare-list">
+          <li><span class="dot">❌</span> إزاي أعمل الـ Effect ده؟</li>
+          <li><span class="dot">❌</span> إزاي أركب الصورة دي؟</li>
+          <li><span class="dot">❌</span> إيه الخط اللي مستخدمينه؟</li>
+          <li><span class="dot">❌</span> إزاي أخلي التصميم شيك؟</li>
+          <li><span class="dot">❌</span> إزاي أعمل Shadow جامد؟</li>
+          <li><span class="dot">❌</span> بيركز على الشكل فقط</li>
+          <li><span class="dot">❌</span> مستني تعليمات</li>
+        </ul>
+      </div>
+      <div class="compare-card pro">
+        <div class="compare-title">
+          🏆 المحترف
+          <span class="badge">يسأل: ليه؟</span>
+        </div>
+        <ul class="compare-list">
+          <li><span class="dot">✅</span> أنا بحل مشكلة إيه؟</li>
+          <li><span class="dot">✅</span> مين الجمهور المستهدف؟</li>
+          <li><span class="dot">✅</span> إيه الإحساس اللي لازم يوصل؟</li>
+          <li><span class="dot">✅</span> إيه أول حاجة العين لازم تشوفها؟</li>
+          <li><span class="dot">✅</span> الناس هتعمل إيه بعد ما تشوف التصميم؟</li>
+          <li><span class="dot">✅</span> هل التصميم بيخدم الهدف؟</li>
+          <li><span class="dot">✅</span> بيدور على المشكلة</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4 — QUOTE ===== -->
+<section class="slide" id="slide-4" style="background:rgba(6,207,156,.02)">
+  <div class="glow-teal" style="width:700px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="slide-num">04</div>
+  <div class="slide-inner">
+    <div class="quote-wrap">
+      <div class="quote-mark">"</div>
+      <div class="quote-text">
+        التصميم <span class="hl">قرار</span>.<br>
+        التصميم <span class="hl">تفكير</span>.<br>
+        التصميم <span class="hl">ترتيب أولويات</span>.
+      </div>
+      <p style="color:var(--muted);font-size:16px;margin-bottom:28px;line-height:1.8">
+        التصميم مش مجرد شكل حلو — هو طريقة تخلي عين الشخص تتحرك بشكل معين،<br>
+        تخليه يحس بإحساس معين، ويفهم رسالة معينة بسرعة.
+      </p>
+      <div class="quote-source">
+        <span>🎨</span>
+        <span>بإشراف أحمد شعلان · Art Director</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4B — WHY QUESTION ===== -->
+<section class="slide" id="slide-4b" style="background:rgba(0,168,255,.015)">
+  <div class="glow-blue" style="width:700px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="slide-num">05</div>
+  <div class="slide-inner" style="text-align:center">
+    <div class="sec-label" style="justify-content:center">السؤال الصعب</div>
+    <h2 class="slide-title" style="font-size:clamp(22px,3.5vw,48px);max-width:860px;margin:0 auto 32px">
+      ليه في ناس <span class="hl">أقل منك فنيًا</span>…<br>
+      ومع ذلك شغالين أكتر منك؟<br>
+      وبيجيبوا Clients أكتر؟ ودخلهم أعلى؟
+    </h2>
+    <p style="color:var(--muted);font-size:15px;line-height:1.8">خليهم يفكروا… إيه إجابتك؟</p>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4C — WRONG ANSWERS ===== -->
+<section class="slide" id="slide-4c">
+  <div class="glow-pink" style="width:600px;height:400px;top:-80px;right:-80px"></div>
+  <div class="slide-num">06</div>
+  <div class="slide-inner">
+    <div class="sec-label">إجابات الناس الشايعة</div>
+    <h2 class="slide-title">هيقولوا… <span class="hl">بس مش دي أصل المشكلة</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:36px">
+      <div class="answer-chip" style="opacity:.7"><div class="chip-icon g2">🤝</div><div><div class="chip-text">علاقات</div><div class="chip-sub">بيعرف ناس في السوق</div></div></div>
+      <div class="answer-chip" style="opacity:.7"><div class="chip-icon g1">📣</div><div><div class="chip-text">تسويق</div><div class="chip-sub">شايل نفسه صح</div></div></div>
+      <div class="answer-chip" style="opacity:.7"><div class="chip-icon g3">🗣️</div><div><div class="chip-text">بيعرف يتكلم</div><div class="chip-sub">مقنع وواثق</div></div></div>
+      <div class="answer-chip" style="opacity:.7"><div class="chip-icon g4">📱</div><div><div class="chip-text">سوشيال ميديا</div><div class="chip-sub">نشط وظاهر</div></div></div>
+      <div class="answer-chip" style="opacity:.7"><div class="chip-icon g2">💼</div><div><div class="chip-text">عنده بورتفوليو</div><div class="chip-sub">شغله مرتب</div></div></div>
+      <div class="answer-chip" style="opacity:.7"><div class="chip-icon g1">💰</div><div><div class="chip-text">أسعاره أقل</div><div class="chip-sub">بيقبل أي عميل</div></div></div>
+      <div class="answer-chip" style="opacity:.7"><div class="chip-icon g3">🍀</div><div><div class="chip-text">حظه أحسن</div><div class="chip-sub">الكون معاه!</div></div></div>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(255,95,126,.08),rgba(245,166,35,.06));border:1px solid rgba(255,95,126,.25);border-radius:20px;padding:24px 32px;text-align:center">
+      <div style="font-size:clamp(16px,2.5vw,24px);font-weight:800;line-height:1.6">
+        كل ده ممكن يكون صح… <span style="color:var(--accent3)">بس مش هو أصل المشكلة.</span><br>
+        <span style="color:var(--accent);font-size:clamp(20px,3vw,36px)">السوق مش بيشتري "شكل حلو" بس.</span><br>
+        <span style="color:var(--text)">السوق بيشتري <span style="color:var(--accent4)">نتيجة.</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4D — WHAT CLIENT WANTS ===== -->
+<section class="slide" id="slide-4d" style="background:rgba(6,207,156,.015)">
+  <div class="glow-teal" style="width:600px;height:400px;bottom:-80px;left:-80px"></div>
+  <div class="slide-num">07</div>
+  <div class="slide-inner">
+    <div class="layout-2col">
+      <div>
+        <div class="sec-label">الحقيقة</div>
+        <h2 class="slide-title">العميل مش بيطلب تصميم<br><span class="hl">علشان يحب التصميم</span></h2>
+        <p class="slide-desc">هو عايز يوصل لحاجة <strong style="color:var(--text)">بعد</strong> التصميم</p>
+        <div style="background:rgba(6,207,156,.08);border:1px solid rgba(6,207,156,.2);border-radius:14px;padding:20px 24px;margin-top:8px">
+          <div style="font-size:14px;font-weight:800;color:var(--accent);margin-bottom:8px">💡 الفكرة الأهم</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.8">
+            التصميم مش هو الهدف النهائي.<br>
+            التصميم <strong style="color:var(--text)">وسيلة</strong> علشان تحقق هدف.<br><br>
+            المصمم اللي بيفكر بالطريقة دي أقوى بكتير من المصمم اللي كل تركيزه على الشكل.
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="answer-chip"><div class="chip-icon g1">💸</div><div><div class="chip-text">عايز يبيع</div><div class="chip-sub">يزود مبيعاته</div></div></div>
+          <div class="answer-chip"><div class="chip-icon g2">🤝</div><div><div class="chip-text">عايز الناس تثق فيه</div><div class="chip-sub">يبني مصداقية</div></div></div>
+          <div class="answer-chip"><div class="chip-icon g3">💡</div><div><div class="chip-text">عايز يشرح فكرة</div><div class="chip-sub">يوضح رسالته</div></div></div>
+          <div class="answer-chip"><div class="chip-icon g4">👀</div><div><div class="chip-text">عايز يجذب الانتباه</div><div class="chip-sub">يستحوذ على الاهتمام</div></div></div>
+          <div class="answer-chip"><div class="chip-icon g1">🚀</div><div><div class="chip-text">عايز Action معين</div><div class="chip-sub">اشتري · اتصل · احجز</div></div></div>
+          <div class="answer-chip"><div class="chip-icon g2">🏆</div><div><div class="chip-text">عايز يبني براند قوي</div><div class="chip-sub">صورة ذهنية راسخة</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4E — TWO DESIGNERS STORY ===== -->
+<section class="slide" id="slide-4e">
+  <div class="glow-blue" style="width:500px;height:400px;top:-100px;right:-50px"></div>
+  <div class="slide-num">08</div>
+  <div class="slide-inner">
+    <div class="sec-label">مثال حقيقي</div>
+    <h2 class="slide-title">مطعم طلب إعلان لـ <span class="hl">وجبة جديدة</span></h2>
+    <p class="slide-desc">اتنين مصممين — إجابتين مختلفتين تمامًا</p>
+
+    <div class="compare-wrap">
+      <div class="compare-card beginner">
+        <div class="compare-title">
+          🎒 المصمم الأول — المنفذ
+          <span class="badge">سأل عن الشكل</span>
+        </div>
+        <ul class="compare-list">
+          <li><span class="dot">❓</span> المقاس كام؟</li>
+          <li><span class="dot">❓</span> الألوان إيه؟</li>
+          <li><span class="dot">❓</span> عندك صور؟</li>
+          <li><span class="dot">❓</span> عايزه مودرن ولا كلاسيك؟</li>
+        </ul>
+        <div style="margin-top:16px;background:rgba(255,95,126,.08);border:1px solid rgba(255,95,126,.2);border-radius:10px;padding:12px;font-size:12px;color:var(--muted)">
+          أسئلة مش غلط… بس <strong style="color:var(--accent3)">ناقصة</strong>. فكر في التنفيذ قبل ما يفهم الهدف.
+        </div>
+      </div>
+      <div class="compare-card pro">
+        <div class="compare-title">
+          🏆 المصمم التاني — المصمم الحقيقي
+          <span class="badge">سأل عن الهدف</span>
+        </div>
+        <ul class="compare-list">
+          <li><span class="dot">✅</span> إيه الهدف من الإعلان؟</li>
+          <li><span class="dot">✅</span> عايزين تزودوا الطلبات؟ ولا تعرّفوا بمنتج جديد؟</li>
+          <li><span class="dot">✅</span> الجمهور عارف المطعم ولا لأ؟</li>
+          <li><span class="dot">✅</span> الوجبة اقتصادية ولا فاخرة؟</li>
+          <li><span class="dot">✅</span> الإعلان للشباب ولا العائلات؟</li>
+          <li><span class="dot">✅</span> المطلوب يطلبوا دلوقتي ولا بس يعرفوا؟</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center">
+      <div style="background:var(--panel);border:1px solid var(--stroke);border-radius:14px;padding:20px">
+        <div style="font-size:12px;color:var(--accent3);font-weight:700;margin-bottom:6px">الأول</div>
+        <div style="font-size:13px;font-weight:700">بيفكر كمنفذ</div>
+        <div style="font-size:11px;color:var(--muted2);margin-top:4px">مستني تعليمات</div>
+      </div>
+      <div style="background:var(--panel);border:1px solid rgba(6,207,156,.2);border-radius:14px;padding:20px">
+        <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:6px">التاني</div>
+        <div style="font-size:13px;font-weight:700">بيفكر كمصمم</div>
+        <div style="font-size:11px;color:var(--muted2);margin-top:4px">بيدور على المشكلة</div>
+      </div>
+      <div style="background:var(--panel);border:1px solid rgba(0,168,255,.2);border-radius:14px;padding:20px">
+        <div style="font-size:12px;color:var(--accent2);font-weight:700;margin-bottom:6px">الفرق</div>
+        <div style="font-size:13px;font-weight:700">أداة تأثير</div>
+        <div style="font-size:11px;color:var(--muted2);margin-top:4px">مش مجرد صورة</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4F — DESIGN IS NOT ART ===== -->
+<section class="slide" id="slide-4f" style="background:rgba(245,166,35,.01)">
+  <div class="glow-teal" style="width:600px;height:400px;top:-80px;left:-80px"></div>
+  <div class="slide-num">09</div>
+  <div class="slide-inner">
+    <div class="sec-label">الحقيقة الأولى</div>
+    <h2 class="slide-title">التصميم <span class="hl">مش فن</span> بس</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px">
+      <div style="background:rgba(255,95,126,.05);border:1px solid rgba(255,95,126,.15);border-radius:20px;padding:28px">
+        <div style="font-size:28px;margin-bottom:14px">🖼️</div>
+        <div style="font-size:16px;font-weight:800;margin-bottom:12px;color:#ffb3c1">الفن</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start"><span style="color:var(--accent3)">→</span> بيعبر عن الفنان نفسه</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start"><span style="color:var(--accent3)">→</span> ممكن يكون شخصي وغامض</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start"><span style="color:var(--accent3)">→</span> مفتوح للتفسير</li>
+        </ul>
+      </div>
+      <div style="background:rgba(6,207,156,.05);border:1px solid rgba(6,207,156,.15);border-radius:20px;padding:28px">
+        <div style="font-size:28px;margin-bottom:14px">🎯</div>
+        <div style="font-size:16px;font-weight:800;margin-bottom:12px;color:#a8fce5">التصميم</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start"><span style="color:var(--accent)">✦</span> بيخدم الجمهور</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start"><span style="color:var(--accent)">✦</span> لازم يكون واضح وله وظيفة</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start"><span style="color:var(--accent)">✦</span> بيوصل رسالة محددة</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="font-size:clamp(18px,3vw,36px);font-weight:800;line-height:1.6">
+        الجمال لوحده <span style="color:var(--accent3)">مش كفاية</span><br>
+        <span style="color:var(--accent)">الجمال + الوظيفة + وضوح الرسالة = تصميم أقوى</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4G — BEGINNER TRAPS ===== -->
+<section class="slide" id="slide-4g">
+  <div class="glow-pink" style="width:500px;height:350px;top:-60px;right:-60px"></div>
+  <div class="slide-num">10</div>
+  <div class="slide-inner">
+    <div class="sec-label">فخ المبتدئين</div>
+    <h2 class="slide-title">بيحاولوا يخلوا كل حاجة <span class="hl">جميلة</span>… وينسوا يخلوها <span style="color:var(--accent3)">مفهومة</span></h2>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:32px">
+      <div class="mistake-card" style="border-color:rgba(255,95,126,.15)">
+        <div class="mistake-icon">🔤</div>
+        <div class="mistake-title" style="font-size:14px">خط حلو… بس مش مقروء</div>
+        <div class="mistake-desc">اختار الخط لأنه يعجبه مش لأنه يخدم الرسالة</div>
+      </div>
+      <div class="mistake-card" style="border-color:rgba(255,95,126,.15)">
+        <div class="mistake-icon">🎨</div>
+        <div class="mistake-title" style="font-size:14px">لون جذاب… ملوش علاقة</div>
+        <div class="mistake-desc">لون حلو بس مش مناسب للمنتج أو البراند</div>
+      </div>
+      <div class="mistake-card" style="border-color:rgba(255,95,126,.15)">
+        <div class="mistake-icon">📦</div>
+        <div class="mistake-title" style="font-size:14px">عناصر كتير = غني؟</div>
+        <div class="mistake-desc">بيضيف أشكال وعناصر فالتصميم يطلع خانق ومشتت</div>
+      </div>
+      <div class="mistake-card" style="border-color:rgba(255,95,126,.15)">
+        <div class="mistake-icon">✨</div>
+        <div class="mistake-title" style="font-size:14px">Effects كتير = شاطر؟</div>
+        <div class="mistake-desc">يحط Effects علشان يثبت مهارته… والرسالة تضيع</div>
+      </div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(6,207,156,.06),rgba(0,168,255,.04));border:1px solid rgba(6,207,156,.2);border-radius:18px;padding:24px 32px;text-align:center">
+      <div style="font-size:clamp(15px,2vw,22px);font-weight:800;line-height:1.7">
+        المحترف يعرف <span style="color:var(--accent)">إمتى يضيف… وإمتى يشيل</span><br>
+        <span style="color:var(--muted);font-size:14px;font-weight:400">الحذف أوقات أقوى من الإضافة — وأبسط تصميم أذكى من تصميم مليان تفاصيل</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4H — REALITY CHECK / VISUAL EYE ===== -->
+<section class="slide" id="slide-4h" style="background:rgba(0,168,255,.012)">
+  <div class="glow-blue" style="width:600px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="slide-num">11</div>
+  <div class="slide-inner">
+    <div class="sec-label">Reality Check</div>
+    <h2 class="slide-title">المصمم المحترف <span class="hl">بيقرأ</span> التصميمات</h2>
+    <p class="slide-desc">مش بيتفرج — بيفكك ويحلل ويسأل ليه</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px">
+      <div style="background:rgba(255,95,126,.05);border:1px solid rgba(255,95,126,.15);border-radius:20px;padding:28px">
+        <div style="font-size:16px;font-weight:800;margin-bottom:16px;color:var(--accent3)">❌ المتفرج العادي</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px"><span>→</span> ده حلو</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px"><span>→</span> ده ضعيف</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px"><span>→</span> عاجبني / مش عاجبني</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px"><span>→</span> مش عارف ليه</li>
+        </ul>
+      </div>
+      <div style="background:rgba(6,207,156,.05);border:1px solid rgba(6,207,156,.15);border-radius:20px;padding:28px">
+        <div style="font-size:16px;font-weight:800;margin-bottom:16px;color:var(--accent)">✅ المصمم المحلل</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">✦</span> ليه اللون ده تحديدًا؟</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">✦</span> ليه الحجم ده لهذا العنصر؟</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">✦</span> ليه العنصر ده هنا؟</li>
+          <li style="font-size:13px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">✦</span> ليه الفراغ ده موجود؟</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
+      <div class="icon-badge"><span class="emoji">🧠</span> تطوير العين البصرية</div>
+      <div class="icon-badge"><span class="emoji">📖</span> يقرأ القرارات ورا الشكل</div>
+      <div class="icon-badge"><span class="emoji">🔍</span> يحلل مش بس يشوف</div>
+      <div class="icon-badge"><span class="emoji">💡</span> يستخلص دروس من كل تصميم</div>
+      <div class="icon-badge"><span class="emoji">🎯</span> زي الكاتب اللي بيحلل كتاب</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 5 — 4 ELEMENTS ===== -->
+<section class="slide" id="slide-5">
+  <div class="glow-blue" style="width:600px;height:400px;top:-100px;left:50%;transform:translateX(-50%)"></div>
+  <div class="slide-num">12</div>
+  <div class="slide-inner">
+    <div class="sec-label">المبادئ الأربعة</div>
+    <h2 class="slide-title">العناصر الأساسية لأي <span class="hl">تصميم قوي</span></h2>
+    <p class="slide-desc">دي مش قواعد جامدة — دي أدوات تفكير بيستخدمها كل محترف</p>
+
+    <div class="principles-grid">
+      <div class="principle-card c1">
+        <div class="p-icon">👁️</div>
+        <div class="p-title">Visual Hierarchy</div>
+        <div class="p-desc">ترتيب الأهمية جوه التصميم — إيه أول حاجة العين تشوفها؟ المبتدئ بيحط عناصر… المحترف بيرتب رحلة العين.</div>
+      </div>
+      <div class="principle-card c2">
+        <div class="p-icon">📐</div>
+        <div class="p-title">Spacing</div>
+        <div class="p-desc">الفراغ مش مساحة فاضية — هو عنصر تصميم أساسي. المبتدئ بيخاف من الفراغ. المحترف بيستخدمه.</div>
+      </div>
+      <div class="principle-card c3">
+        <div class="p-icon">🔤</div>
+        <div class="p-title">Typography</div>
+        <div class="p-desc">الخط صوت التصميم — بيقول إحساس قبل ما الناس تقرأ الكلام. كثرة الخطوط مش إبداع.</div>
+      </div>
+      <div class="principle-card c4">
+        <div class="p-icon">🎯</div>
+        <div class="p-title">Composition</div>
+        <div class="p-desc">توزيع العناصر جوه التصميم — زي الإخراج في السينما. كل عنصر له وظيفة ومكان ووزن.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6 — VISUAL HIERARCHY DEMO ===== -->
+<section class="slide" id="slide-6" style="background:rgba(6,207,156,.015)">
+  <div class="slide-num">06</div>
+  <div class="slide-inner">
+    <div class="sec-label">Visual Hierarchy — تطبيق عملي</div>
+    <h2 class="slide-title">الفرق بين <span class="hl">حطيت عناصر</span> و<span class="hl">رتبت رحلة</span></h2>
+
+    <div class="hier-demo">
+      <div class="demo-box">
+        <h4><span class="bad">❌ بدون Hierarchy</span> — كل حاجة زي بعض</h4>
+        <div class="bad-layout">
+          <div class="bad-row" style="font-size:13px">خصم 50%</div>
+          <div class="bad-row" style="font-size:12px">هدوم صيف</div>
+          <div class="bad-row" style="font-size:13px">اشتري دلوقتي</div>
+          <div class="bad-row" style="font-size:12px">ينتهي في 15 يوليو</div>
+          <div class="bad-row" style="font-size:13px">📱 01000000000</div>
+        </div>
+        <p style="font-size:11px;color:var(--accent3);margin-top:12px">👆 العين مش عارفة تبدأ منين — كل حاجة بنفس القوة</p>
+      </div>
+
+      <div class="demo-box">
+        <h4><span class="good">✅ مع Hierarchy</span> — رحلة واضحة للعين</h4>
+        <div class="good-ad">
+          <div class="ad-discount">50%</div>
+          <div class="ad-label">خصم على هدوم الصيف</div>
+          <div class="ad-sub">العرض ينتهي في 15 يوليو</div>
+          <div class="ad-cta">اشتري دلوقتي ←</div>
+        </div>
+        <p style="font-size:11px;color:var(--accent);margin-top:12px">👆 الخصم أكبر ← المنتج ← التفاصيل ← الـ CTA</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="icon-row">
+      <div class="icon-badge"><span class="emoji">📏</span> الحجم يحدد الأهمية</div>
+      <div class="icon-badge"><span class="emoji">🎨</span> اللون يشد الانتباه</div>
+      <div class="icon-badge"><span class="emoji">⚡</span> التباين يخلق تركيز</div>
+      <div class="icon-badge"><span class="emoji">📍</span> المكان يحدد الأولوية</div>
+      <div class="icon-badge"><span class="emoji">⬜</span> الفراغ يعطي أهمية</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7 — MISTAKES ===== -->
+<section class="slide" id="slide-7">
+  <div class="glow-pink" style="width:700px;height:400px;top:-100px;right:-100px"></div>
+  <div class="slide-num">07</div>
+  <div class="slide-inner">
+    <div class="sec-label">أكبر الأخطاء</div>
+    <h2 class="slide-title">الأخطاء اللي <span class="hl">بتوقف مشوارك</span></h2>
+    <p class="slide-desc">مش لازم تعمل كلهم — خطأ واحد منهم كفيل يوقف تطورك</p>
+
+    <div class="mistakes-grid">
+      <div class="mistake-card">
+        <div class="mistake-num">01</div>
+        <div class="mistake-icon">🪞</div>
+        <div class="mistake-title">التقليد بدون فهم</div>
+        <div class="mistake-desc">بتقلد الشكل بدون ما تفهم التفكير. أخدت القشرة وسبت العقل. متقلدش التصميم — حلله.</div>
+      </div>
+      <div class="mistake-card">
+        <div class="mistake-num">02</div>
+        <div class="mistake-icon">🔧</div>
+        <div class="mistake-title">إدمان الأدوات</div>
+        <div class="mistake-desc">Photoshop + Figma + After Effects… بس مفيش تفكير. الأداة زي القلم — القلم الغالي مش هيخليك كاتب عظيم.</div>
+      </div>
+      <div class="mistake-card">
+        <div class="mistake-num">03</div>
+        <div class="mistake-icon">📌</div>
+        <div class="mistake-title">Pinterest Copy</div>
+        <div class="mistake-desc">بتفتح Pinterest، بتختار شكل عاجبك، وبتلزق عليه محتوى العميل. ده قناع حلو فوق فكرة فاضية.</div>
+      </div>
+      <div class="mistake-card">
+        <div class="mistake-num">04</div>
+        <div class="mistake-icon">💭</div>
+        <div class="mistake-title">تجاهل الـ Concept</div>
+        <div class="mistake-desc">التصميم من غير فكرة أساسية عامل زي كلام مرتب بس ملوش معنى. الفكرة هي الروح.</div>
+      </div>
+      <div class="mistake-card">
+        <div class="mistake-num">05</div>
+        <div class="mistake-icon">🌍</div>
+        <div class="mistake-title">تجاهل السوق</div>
+        <div class="mistake-desc">ذوقك الشخصي مش هو الحكم النهائي. التصميم الصح هو المناسب للهدف والجمهور والسياق.</div>
+      </div>
+      <div class="mistake-card" style="border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.04)">
+        <div class="mistake-num">🌟</div>
+        <div class="mistake-icon">💡</div>
+        <div class="mistake-title" style="color:var(--accent4)">التصميم وسيلة مش هدف</div>
+        <div class="mistake-desc">السوق مش بيشتري "شكل حلو". هو بيشتري نتيجة. التصميم الناجح هو اللي يخلي الناس تفهم، تحس، وتتصرف.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 8 — DESIGN THINKING PROCESS ===== -->
+<section class="slide" id="slide-8" style="background:rgba(0,168,255,.015)">
+  <div class="glow-blue" style="width:500px;height:400px;bottom:-100px;right:-50px"></div>
+  <div class="slide-num">08</div>
+  <div class="slide-inner">
+    <div class="layout-2col">
+      <div>
+        <div class="sec-label">Design Thinking</div>
+        <h2 class="slide-title">التصميم بيبدأ من <span class="hl">الفهم</span> مش التنفيذ</h2>
+        <p class="slide-desc" style="margin-bottom:0">
+          المبتدئ بيجري على التنفيذ فورًا — علشان كدة بيتعب في التعديلات.<br>
+          المحترف بياخد وقت في التفكير — علشان التنفيذ يبقى أوضح وأسرع.
+        </p>
+        <div class="divider"></div>
+        <div style="background:rgba(6,207,156,.08);border:1px solid rgba(6,207,156,.2);border-radius:12px;padding:16px 20px">
+          <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px">💡 القاعدة الذهبية</div>
+          <div style="font-size:13px;color:var(--muted)">كل دقيقة تفكير قبل التصميم بتوفر عليك عشر دقايق تعديل بعده.</div>
+        </div>
+      </div>
+
+      <div class="process-wrap">
+        <div class="process-step">
+          <div class="step-line-wrap">
+            <div class="step-circle">01</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">🔍 فهم المشكلة</div>
+            <div class="step-desc">ليه التصميم ده موجود أصلًا؟ إيه الهدف منه؟</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-line-wrap">
+            <div class="step-circle">02</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">👥 فهم الجمهور</div>
+            <div class="step-desc">مين بيشوف التصميم ده؟ إيه اهتماماته وتوقعاته؟</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-line-wrap">
+            <div class="step-circle">03</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">🎯 تحديد الهدف</div>
+            <div class="step-desc">الناس هتعمل إيه بعد ما تشوف التصميم؟</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-line-wrap">
+            <div class="step-circle">04</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">💡 بناء الفكرة (Concept)</div>
+            <div class="step-desc">إيه المعنى الأعمق اللي التصميم بيحمله؟</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-line-wrap">
+            <div class="step-circle">05</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">🎨 التنفيذ والمراجعة</div>
+            <div class="step-desc">دلوقتي ابدأ الشغل — والمراجعة جزء من العملية</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-line-wrap">
+            <div class="step-circle" style="border-color:var(--accent);background:rgba(6,207,156,.1)">✓</div>
+          </div>
+          <div class="step-content">
+            <div class="step-title" style="color:var(--accent)">🏆 التسليم</div>
+            <div class="step-desc">تصميم يحقق هدفه — مش بس شكله حلو</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 9 — CHALLENGE ===== -->
+<section class="slide" id="slide-9">
+  <div class="glow-teal" style="width:700px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="slide-num">09</div>
+  <div class="slide-inner">
+    <div class="sec-label">التحدي العملي</div>
+    <h2 class="slide-title" style="text-align:center;margin-bottom:32px">وقت <span class="hl">التطبيق</span></h2>
+
+    <div class="challenge-box">
+      <div class="challenge-icon">🧃</div>
+      <div class="challenge-title">إعلان عصائر بدون عصير!</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:16px">
+        شركة عصائر جديدة عايزة إعلان عن <strong style="color:var(--text)">الانتعاش في الصيف</strong>
+      </p>
+      <div class="challenge-rule">
+        ⛔ ممنوع صورة عصير &nbsp;·&nbsp; ممنوع فاكهة &nbsp;·&nbsp; ممنوع كوب
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:16px">
+        مش هتجيبوا برتقالة وثلج وخلاص — المطلوب تفكروا في <strong style="color:var(--accent)">معنى الانتعاش نفسه</strong>
+      </p>
+      <div class="challenge-ideas">
+        <div class="idea-chip">🌵 صحراء وفي النص منطقة باردة</div>
+        <div class="idea-chip">🌊 موجة هوا منعشة</div>
+        <div class="idea-chip">☀️ أشعة شمس بتدوب</div>
+        <div class="idea-chip">🏙️ شارع حر وحواليه دايرة باردة</div>
+        <div class="idea-chip">🌿 صحراء بمساحة خضرا</div>
+        <div class="idea-chip">💨 هوا بدل المنتج</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="text-align:center">
+      <p style="color:var(--muted);font-size:14px">
+        التصميم مش بحث عن صورة جاهزة — <span style="color:var(--accent);font-weight:700">التصميم بناء فكرة من معنى</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 10 — TOOLS FOR THE EYE ===== -->
+<section class="slide" id="slide-10" style="background:rgba(245,166,35,.01)">
+  <div class="glow-blue" style="width:500px;height:300px;top:-50px;right:0"></div>
+  <div class="slide-num">10</div>
+  <div class="slide-inner">
+    <div class="sec-label">تطوير العين البصرية</div>
+    <h2 class="slide-title">المصمم المحترف <span class="hl">بيقرأ</span> التصميمات</h2>
+    <p class="slide-desc">متقولش "حلو أو وحش" — اسأل "ليه؟"</p>
+
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-emoji">🎯</div>
+        <div class="tool-name">الهدف</div>
+        <div class="tool-desc">إيه هدف التصميم؟ بيع؟ وعي؟ حجز؟</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-emoji">👥</div>
+        <div class="tool-name">الجمهور</div>
+        <div class="tool-desc">مين بيشوف ده؟ إيه توقعاته؟</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-emoji">👁️</div>
+        <div class="tool-name">أول حاجة</div>
+        <div class="tool-desc">إيه أول عنصر شوفته؟ وليه؟</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-emoji">💓</div>
+        <div class="tool-name">الإحساس</div>
+        <div class="tool-desc">فخامة؟ راحة؟ حماس؟ ثقة؟</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-emoji">💡</div>
+        <div class="tool-name">الفكرة</div>
+        <div class="tool-desc">في معنى أعمق ولا مجرد عرض؟</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-emoji">🖱️</div>
+        <div class="tool-name">الـ CTA</div>
+        <div class="tool-desc">هل عارف تعمل إيه بعد ما تشوفه؟</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-emoji">📏</div>
+        <div class="tool-name">المسافات</div>
+        <div class="tool-desc">العناصر بتتنفس ولا مزدحمة؟</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-emoji">🔤</div>
+        <div class="tool-name">التايبوغرافي</div>
+        <div class="tool-desc">الخط مناسب؟ مقروء؟ منظم؟</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 11 — HOMEWORK ===== -->
+<section class="slide" id="slide-11">
+  <div class="glow-teal" style="width:600px;height:400px;bottom:-100px;left:50%;transform:translateX(-50%)"></div>
+  <div class="slide-num">11</div>
+  <div class="slide-inner">
+    <div class="sec-label">الواجب</div>
+    <h2 class="slide-title"><span class="hl">Design Observation</span> Mission</h2>
+    <p class="slide-desc">كل يوم لمدة أسبوع — اختار تصميم احترافي وحلله كتابة</p>
+
+    <div class="hw-grid">
+      <div class="hw-card" style="border-color:rgba(6,207,156,.2)">
+        <h4 style="color:var(--accent)">📋 إيه اللي تكتبه عن كل تصميم</h4>
+        <ul class="hw-list">
+          <li><span class="check">✦</span> نوع التصميم وهدفه</li>
+          <li><span class="check">✦</span> مين جمهوره المستهدف</li>
+          <li><span class="check">✦</span> إيه أول حاجة شوفتها وليه</li>
+          <li><span class="check">✦</span> إيه الفكرة والإحساس</li>
+          <li><span class="check">✦</span> الألوان والخطوط والمسافات</li>
+          <li><span class="check">✦</span> هل في CTA واضح؟</li>
+          <li><span class="check">✦</span> أهم حاجة اتعلمتها منه</li>
+        </ul>
+      </div>
+      <div class="hw-card">
+        <h4>📅 جدول الأسبوع</h4>
+        <ul class="hw-list">
+          <li><span class="check" style="color:var(--accent2)">1</span> تصميم ويب — إعلان بانر</li>
+          <li><span class="check" style="color:var(--accent2)">2</span> تصميم سوشيال ميديا</li>
+          <li><span class="check" style="color:var(--accent2)">3</span> لوجو + هوية بصرية</li>
+          <li><span class="check" style="color:var(--accent2)">4</span> تصميم موبايل أو تطبيق</li>
+          <li><span class="check" style="color:var(--accent2)">5</span> إعلان خارجي أو أوت دور</li>
+          <li><span class="check" style="color:var(--accent2)">6</span> تصميم من تقليدك المفضل</li>
+          <li><span class="check" style="color:var(--accent2)">7</span> تصميم تكرهه — حلله!</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;background:rgba(6,207,156,.06);border:1px solid rgba(6,207,156,.2);border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:16px">
+      <span style="font-size:32px">🎯</span>
+      <div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:4px">بعد الأسبوع ده...</div>
+        <div style="font-size:13px;color:var(--muted)">هتبدأ عينك تشوف حاجات المبتدئين مش بيلاحظوها — ومن هنا تبدأ رحلة المصمم الحقيقي.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 12 — FINAL ===== -->
+<section class="slide" id="slide-12" style="text-align:center">
+  <div class="glow-teal" style="width:1000px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="slide-num">12</div>
+  <div class="slide-inner">
+    <div class="final-wrap">
+      <div class="sec-label" style="justify-content:center">Mindset Shift</div>
+      <div class="final-title">
+        المصمم المحترف<br>
+        أكتر واحد بيعرف<br>
+        <span class="hl">يفكر</span>
+      </div>
+
+      <div class="final-pills">
+        <div class="final-pill"><span class="accent">✦</span> يفهم المشكلة</div>
+        <div class="final-pill"><span class="accent">✦</span> يفهم الجمهور</div>
+        <div class="final-pill"><span class="accent">✦</span> يبني فكرة</div>
+        <div class="final-pill"><span class="accent">✦</span> يوجه عين المشاهد</div>
+        <div class="final-pill"><span class="accent">✦</span> يشيل الزائد</div>
+        <div class="final-pill"><span class="accent">✦</span> يخلي الجمال يخدم الهدف</div>
+      </div>
+
+      <div style="font-size:16px;color:var(--muted);line-height:2;margin-bottom:36px">
+        من النهاردة — لما تشوف تصميم متقولش <span style="color:var(--accent3)">حلو أو وحش</span><br>
+        اسأل: <span style="color:var(--accent);font-weight:700">ليه نجح؟ · ليه فشل؟ · ليه اللون ده؟ · ليه الفراغ ده؟</span>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
+        <div style="background:var(--panel);border:1px solid var(--stroke);border-radius:999px;padding:10px 20px;display:flex;align-items:center;gap:10px">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center">🎨</div>
+          <div style="text-align:right">
+            <div style="font-size:14px;font-weight:800">أحمد شعلان</div>
+            <div style="font-size:11px;color:var(--muted2)">Art Director · بإشراف أحمد شعلان</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="huge-text">DESIGN</div>
+</section>
+
+</div><!-- /slides-wrap -->
+
+<script>
+// Progress + counter
+const slides = document.querySelectorAll('.slide');
+const fill = document.getElementById('progressFill');
+const counter = document.getElementById('slideCounter');
+const total = slides.length;
+
+function updateProgress() {
+  const scrolled = window.scrollY;
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = Math.min(100, (scrolled / docH) * 100);
+  fill.style.width = pct + '%';
+
+  // Find current slide
+  let current = 1;
+  slides.forEach((s, i) => {
+    const rect = s.getBoundingClientRect();
+    if (rect.top <= window.innerHeight * 0.5) current = i + 1;
+  });
+  counter.textContent = String(current).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+}
+
+window.addEventListener('scroll', updateProgress, { passive: true });
+
+// Animate on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.principle-card, .mistake-card, .answer-chip, .tool-card, .book-card, .hw-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(24px)';
+  el.style.transition = 'opacity .5s ease, transform .5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
